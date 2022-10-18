@@ -1,0 +1,43 @@
+public class CaseInformationForPDF {
+    
+   
+    @InvocableMethod(label='Get Case RecordID' description='Returns the list of account names corresponding to the specified account IDs.')
+    public Static void attachDocumentsRelatedToCase(List<Id> recordId) 
+    {
+        SYSTEM.DEBUG('recordIdrecordId1' + recordId);
+     
+        PageReference myPdf =new PageReference('/apex/LightningPDFforCase');//myPdfPage is the name of your pdf page
+        myPdf.getParameters().put('Id',recordId[0]);  //ID is getting passed to VF page
+        blob pdfBody;
+       
+        system.debug('recordIdrecordId2' +recordId);
+        Case ord=[select id,CaseNumber  From Case where id=:recordId];
+        String docsName='Case'+ ord.CaseNumber+' ' +DateTime.now().format()+'.pdf';
+       
+        ContentVersion cVersion = new ContentVersion();
+        cVersion.ContentLocation = 'S'; //S-Document is in Salesforce. E-Document is outside of Salesforce. L-Document is on a Social Network.
+        cVersion.PathOnClient = docsName;//File name with extention
+        cVersion.Origin = 'H';//C-Content Origin. H-ChcontentVersionRecordser Origin.
+        cVersion.Title = docsName;//Name of the file
+        
+        if(Test.isRunningTest()) { 
+            pdfBody = blob.valueOf('Unit.Test');
+        } else {
+            pdfBody = myPdf.getContentAsPDF();
+        }
+        cVersion.VersionData = pdfBody;//contentVersionRecordsach.Body;//File content    
+        Insert cVersion;
+        SYSTEM.DEBUG('cVersion' + cVersion);
+        //After saved the Content Verison, get the ContentDocumentId
+        Id conDocument = [SELECT ContentDocumentId FROM ContentVersion WHERE Id =:cVersion.Id].ContentDocumentId;
+        SYSTEM.DEBUG('conDocument' + conDocument);
+        //Insert ContentDocumentLink
+        ContentDocumentLink contentDistributionRecordocLink = new ContentDocumentLink();
+        contentDistributionRecordocLink.ContentDocumentId = conDocument;//Add ContentDocumentId
+        contentDistributionRecordocLink.LinkedEntityId = recordID[0];///\contentVersionRecordsach.ParentId;//Add contentVersionRecordsachment parentId
+        contentDistributionRecordocLink.ShareType = 'I';//V - Viewer permission. C - Collaborator permission. I - Inferred permission.
+        contentDistributionRecordocLink.Visibility = 'InternalUsers';//AllUsers, InternalUsers, SharedUsers
+        Insert contentDistributionRecordocLink;
+        SYSTEM.DEBUG('contentDistributionRecordocLink' + contentDistributionRecordocLink);
+    }
+}
