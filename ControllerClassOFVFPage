@@ -1,0 +1,101 @@
+public without sharing class CaseInfoForPDF {
+    Public  Case caseRecords{get;set;}          //We are quering again to pass the values to Vf page
+    // public  string recordId {get;set;}
+    Public String recordId{get;set;}
+    Public  List<ContentVersion> contentVersionRecords;
+    // public Static string pdfView {get;set;}
+    Public  list<ContentDistribution> contentDistributionRecords;
+    Public  list<ContentDistribution> contentDistributionQueriedRecords {get;set;} 
+    Public  list<ContentDocumentLink> contentVersionRecordsDocumentLink;
+    Public  Set<id> contentDocumentIds;
+    
+    public CaseInfoForPDF() 
+    {
+        recordId = apexpages.currentpage().getparameters().get('Id');
+        
+        caseRecords = New Case();
+        caseRecords = [select CaseNumber,EF_Escalation_Type__c ,EF_Severity__c,EF_Urgency__c,EF_Problem_Description__c,EF_Logs_Attached__c,EF_Full_Screen_Shots_Attached__c,EF_Query_Results_attached__c,EF_What_is_the_expected_function__c,
+                       EF_Steps_to_reproduce__c,EF_Are_step_screenshot_included__c,Step_screenshot_included_as__c,EF_Problem_Started__c,EF_On_Prem__c,createdby.name,KnowledgeArticleNumber__c,Article__c,EF_Server_OS_version__c,
+                       EF_Client_OS_version__c,EF_Browser_name_and_Version__c,EF_SQL_version__c,EF_Office_version__c,EF_Database_System__c,EF_How_Many_Users_Affected__c,EF_Reproducible__c,EF_If_Reproducible_yes__c,EF_Role_of_the_user_having_the_problem__c,
+                       EF_Detailed_Steps_that_lead_to_problem__c,EF_List_of_work_already_done__c,EF_Has_a_workaround_provided_to_client__c,EF_Has_the_Champion_given_authorization__c,EF_Log_Comment__c,EF_Champion_Contact__c from case where id =: recordId];
+        
+        //  caseRecords  = demoClass.ddd(recordId);
+        system.debug('recordIdrecordId1'+recordId);
+        system.debug('caseRecordscaseRecords2'+caseRecords);
+        
+        
+        contentVersionRecordsDocumentLink = New list<ContentDocumentLink>();
+        contentDistributionRecords = New list<ContentDistribution>();
+        contentVersionRecords = New list<ContentVersion>();
+        
+        contentVersionRecordsDocumentLink =[SELECT id,ContentDocumentId FROM ContentDocumentLink WHERE  LinkedEntityId =:recordId];
+        contentDocumentIds = New Set<id>();
+        If(contentVersionRecordsDocumentLink.size()>0 && contentVersionRecordsDocumentLink != NULL)
+        {
+            for(ContentDocumentLink contentDistributionRecord : contentVersionRecordsDocumentLink)
+            {
+                contentDocumentIds.add(contentDistributionRecord.ContentDocumentId);
+            }
+        }
+        system.debug('contentDocumentIds'+contentDocumentIds);
+        If(contentDocumentIds.size()>0 && contentDocumentIds != NULL)
+        {
+            contentVersionRecords =[SELECT id,Title,ContentDocumentId,VersionData   FROM ContentVersion WHERE islatest=true and ContentDocumentId in :contentDocumentIds];
+        }
+        system.debug('contentVersionRecords'+contentVersionRecords);
+        contentDistributionRecords = New list<ContentDistribution>();
+        
+        If(contentVersionRecords.size()>0 && contentVersionRecords !=NULL){
+            
+            for(ContentVersion cont : contentVersionRecords){
+                ContentDistribution contentDistributionRecord = new ContentDistribution();
+                contentDistributionRecord.name = cont.Title;
+                contentDistributionRecord.ContentVersionId = cont.id;
+                contentDistributionRecord.PreferencesAllowOriginalDownload = true;
+                contentDistributionRecord.PreferencesAllowPDFDownload = true;
+                contentDistributionRecord.PreferencesAllowViewInBrowser = true;
+                
+                contentDistributionRecords.add(contentDistributionRecord); 
+            }
+        }
+        system.debug('contentDistributionRecords'+contentDistributionRecords);
+        
+    }
+    
+    public void DefTable(){
+        /*  CaseInfoForPDF jj = NEw CaseInfoForPDF();
+jj.aaaa();
+caseRecords = New Case();
+caseRecords = [select CaseNumber,EF_Escalation_Type__c ,EF_Severity__c,EF_Urgency__c,EF_Problem_Description__c,EF_Logs_Attached__c,EF_Full_Screen_Shots_Attached__c,EF_Query_Results_attached__c,EF_What_is_the_expected_function__c,
+EF_Steps_to_reproduce__c,EF_Are_step_screenshot_included__c,Step_screenshot_included_as__c,EF_Problem_Started__c,EF_On_Prem__c,createdby.name,KnowledgeArticleNumber__c,Article__c,EF_Server_OS_version__c,
+EF_Client_OS_version__c,EF_Browser_name_and_Version__c,EF_SQL_version__c,EF_Office_version__c,EF_Database_System__c,EF_How_Many_Users_Affected__c,EF_Reproducible__c,EF_If_Reproducible_yes__c,EF_Role_of_the_user_having_the_problem__c,
+EF_Detailed_Steps_that_lead_to_problem__c,EF_List_of_work_already_done__c,EF_Has_a_workaround_provided_to_client__c,EF_Has_the_Champion_given_authorization__c,EF_Log_Comment__c,EF_Champion_Contact__c from case where id =: recordId];
+
+system.debug('recordIdrecordId1'+recordId);
+system.debug('caseRecordscaseRecords2'+caseRecords);
+*/
+        IF(contentDistributionRecords.size()>0 && contentDistributionRecords !=NULL)
+        {	
+            contentDistributionQueriedRecords = New list<ContentDistribution>();
+            
+            Insert contentDistributionRecords; 
+            
+            contentDistributionQueriedRecords = [SELECT DistributionPublicUrl,name,Id FROM ContentDistribution WHERE ID in :contentDistributionRecords];
+            SYSTEM.DEBUG('contentDistributionQueriedRecords' + contentDistributionQueriedRecords);
+        }
+        
+        
+    }
+    public void aaaa()
+    {
+        /* caseRecords = New Case();
+caseRecords = [select CaseNumber,EF_Escalation_Type__c ,EF_Severity__c,EF_Urgency__c,EF_Problem_Description__c,EF_Logs_Attached__c,EF_Full_Screen_Shots_Attached__c,EF_Query_Results_attached__c,EF_What_is_the_expected_function__c,
+EF_Steps_to_reproduce__c,EF_Are_step_screenshot_included__c,Step_screenshot_included_as__c,EF_Problem_Started__c,EF_On_Prem__c,createdby.name,KnowledgeArticleNumber__c,Article__c,EF_Server_OS_version__c,
+EF_Client_OS_version__c,EF_Browser_name_and_Version__c,EF_SQL_version__c,EF_Office_version__c,EF_Database_System__c,EF_How_Many_Users_Affected__c,EF_Reproducible__c,EF_If_Reproducible_yes__c,EF_Role_of_the_user_having_the_problem__c,
+EF_Detailed_Steps_that_lead_to_problem__c,EF_List_of_work_already_done__c,EF_Has_a_workaround_provided_to_client__c,EF_Has_the_Champion_given_authorization__c,EF_Log_Comment__c,EF_Champion_Contact__c from case where id =: recordId];
+system.debug('recordIdrecordId3'+recordId);
+system.debug('caseRecordscaseRecords4'+caseRecords); */
+        
+    }
+    
+}
