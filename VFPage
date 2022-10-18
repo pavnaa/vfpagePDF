@@ -1,0 +1,92 @@
+<!--LightningPDFforCase.vfp-->
+<apex:page showHeader="true"  Controller="CaseInfoForPDF" standardStylesheets="true" renderAs="PDF" action="{!DefTable}">  
+    <apex:form >
+        <body>
+            <head>
+                
+            </head>
+            
+            
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span style="font-size:12px;"> 
+                                <apex:outputLabel value="Severity"/> : <apex:outputField value="{!caseRecords.EF_Severity__c}"/><br /> 
+                                <apex:outputLabel value="Escalation Type"/> : <apex:outputField value="{!caseRecords.EF_Escalation_Type__c}"/><br />
+                                <apex:outputLabel value="Urgency"/> : <apex:outputField value="{!caseRecords.EF_Urgency__c}"/><br />
+                                <apex:outputLabel value="Problem Description"/> : <apex:outputField value="{!caseRecords.EF_Problem_Description__c}"/><br />
+                                
+                                <apex:outputLabel value="Logs Attached:"/> : <apex:outputField value="{!caseRecords.EF_Logs_Attached__c}"/><br />
+                                <apex:outputLabel value="Full Screen Shots Attached"/> : <apex:outputField value="{!caseRecords.EF_Full_Screen_Shots_Attached__c}"/><br />
+                                <apex:outputLabel value="Query Results attached"/> : <apex:outputField value="{!caseRecords.EF_Query_Results_attached__c}"/><br />
+                                
+                                <apex:outputLabel value="What is the expected function"/> : <apex:outputField value="{!caseRecords.EF_What_is_the_expected_function__c}"/><br />
+                                <apex:outputLabel value="Steps to reproduce "/> : <apex:outputField value="{!caseRecords.EF_Steps_to_reproduce__c}"/><br />
+                                <apex:outputLabel value="Are step screenshot included"/> : <apex:outputField value="{!caseRecords.EF_Are_step_screenshot_included__c}"/><br />
+                                
+                                <apex:outputLabel value="Step screenshot included as"/> : <apex:outputField value="{!caseRecords.Step_screenshot_included_as__c}"/><br />
+                                <apex:outputLabel value="Problem Started"/> : <apex:outputField value="{!caseRecords.EF_Problem_Started__c}"/><br />
+                                <apex:outputLabel value="On-Prem"/> : <apex:outputField value="{!caseRecords.EF_On_Prem__c}"/><br />
+                                
+                                <apex:outputLabel value="caseRecords Creator"/> : <apex:outputField value="{!caseRecords.createdby.name}"/><br />
+                                <apex:outputLabel value="Knowledge Article Number"/> : <apex:outputField value="{!caseRecords.KnowledgeArticleNumber__c}"/><br />
+                                <apex:outputLabel value="Article description"/> : <apex:outputField value="{!caseRecords.Article__c}"/><br />
+                                
+                            </span>
+                            
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td><span style="font-size:12px" >
+                            <apex:outputLabel value="Server OS version"/> : <apex:outputField value="{!caseRecords.EF_Server_OS_version__c}"/><br />
+                            <apex:outputLabel value="Client OS version"/> : <apex:outputField value="{!caseRecords.EF_Client_OS_version__c}"/><br />
+                            <apex:outputLabel value="Browser name and Version"/> : <apex:outputField value="{!caseRecords.EF_Browser_name_and_Version__c}"/><br />
+                            
+                            <apex:outputLabel value="SQL version"/> : <apex:outputField value="{!caseRecords.EF_SQL_version__c}"/><br />
+                            <apex:outputLabel value="Office version"/> : <apex:outputField value="{!caseRecords.EF_Office_version__c}"/><br />
+                            <apex:outputLabel value="Database/System"/> : <apex:outputField value="{!caseRecords.EF_Database_System__c}"/><br />
+                            
+                            <apex:outputLabel value="How Many Users Affected"/> : <apex:outputField value="{!caseRecords.EF_How_Many_Users_Affected__c}"/><br />
+                            <apex:outputLabel value="Reproducible"/> : <apex:outputField value="{!caseRecords.EF_Reproducible__c}"/><br />
+                            <apex:outputLabel value="If Reproducible yes"/> : <apex:outputField value="{!caseRecords.EF_If_Reproducible_yes__c}"/><br />
+                            
+                            <apex:outputLabel value="Role of the user having the problem"/> : <apex:outputField value="{!caseRecords.EF_Role_of_the_user_having_the_problem__c}"/><br />
+                            <apex:outputLabel value="Detailed Steps that lead to problem"/> : <apex:outputField value="{!caseRecords.EF_Detailed_Steps_that_lead_to_problem__c}"/><br />
+                            <apex:outputLabel value="List of work already done"/> : <apex:outputField value="{!caseRecords.EF_List_of_work_already_done__c}"/><br />
+                            
+                            <apex:outputLabel value="Has a workaround provided to client"/> : <apex:outputField value="{!caseRecords.EF_Has_a_workaround_provided_to_client__c}"/><br />
+                            <apex:outputLabel value="Has the Champion given authorization to Requestion Data Base Copy"/> : <apex:outputField value="{!caseRecords.EF_Has_the_Champion_given_authorization__c}"/><br />
+                            <apex:outputLabel value="Log Comment"/> : <apex:outputField value="{!caseRecords.EF_Log_Comment__c}"/><br />
+                            <apex:outputLabel value="Champion Contact:"/> : <apex:outputField value="{!caseRecords.EF_Champion_Contact__c}"/><br />
+                            
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table width="100%">
+                <tbody>
+                    <tr>
+                        <td>
+                            <span style="font-size:12px;"><strong>DOCUMENTS :-</strong><br />
+                                <ul>
+                                    <apex:repeat value="{!contentDistributionQueriedRecords}" var="attachment">
+                                        <li>  <apex:outputLink value="{!attachment.DistributionPublicUrl}" id="theLink">{!attachment.name}</apex:outputLink></li>
+                                    </apex:repeat> 
+                                </ul>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>  
+        </body>
+        
+    </apex:form>                      
+</apex:page>
